@@ -32,7 +32,7 @@ class ANN():
         diff = target - output
         return 0.5 * np.dot(diff, diff.T)
 
-    def forward(self, x, target):
+    def forward(self, x):
         self.a = [0] * (self.L + 1)
         self.o = [0] * (self.L + 1)
         self.o[0] = np.copy(x)
@@ -42,19 +42,41 @@ class ANN():
                 self.o[l] = self.sigmoid(self.a[l])
             else:
                 self.o[l] = self.relu(self.a[l])
-        return self.error(target, self.o[self.L]) 
+        return self.o[self.L]
 
     def backward(self, target):
-        self.dE = [0] * (self.L + 1)
+        dE = [0] * (self.L + 1)
         self.deltas = [0] * (self.L + 1)
         for l in reversed(range(1, self.L + 1)):
             if l == self.L:
                 self.deltas[l] = self.sigmoid_derivative(self.a[l]) * (self.o[l] - target)
-                self.dE[l] = np.outer(self.deltas[l], self.o[l-1])
+                dE[l] = np.outer(self.deltas[l], self.o[l-1])
             else:
                 self.deltas[l] = self.relu_derivative(self.a[l]) * np.dot(self.deltas[l + 1].T, self.W[l + 1])
-                self.dE[l] = np.outer(self.deltas[l], self.o[l-1])
+                dE[l] = np.outer(self.deltas[l], self.o[l-1])
+        return dE
 
-    def backpropagation(self):
+    def backpropagation(self, x, target):
+        error = 0
+        if len(x.shape) == 1:
+            n = 1
+            output = self.forward(x)
+            error += self.error(output, target)
+            dE = self.backward(target)
+        else:
+            n = x.shape[1]
+            for i in range(len(x)):
+                output = self.forward(x[i])
+                error += self.error(output, target[i])
+                if i == 0:
+                    dE = self.backward(target[i])
+                else:
+                    dE += self.backward(target[i])
+        return error/n, dE
+
+    # def train(self, x, target, batch_size=1):
+
+
+
 
         
