@@ -1,6 +1,9 @@
 import numpy as np
 
 class ANN():
+    '''
+    
+    '''
 
     def __init__(self, layers):
         self.L = len(layers) - 1
@@ -9,10 +12,10 @@ class ANN():
         
     def initialization(self):
         self.W = np.array([0] * (self.L + 1), dtype=object)
-        # self.b = np.array([0] * (self.L + 1), dtype=object)
+        self.b = np.array([0] * (self.L + 1), dtype=object)
         for l in range(1, self.L + 1):
             self.W[l] = np.random.rand(self.layers[l], self.layers[l - 1])
-            # self.b[l] = np.random.randn(self.layers[l],)
+            self.b[l] = np.random.randn(self.layers[l],)
 
     def sigmoid(self, a):
         return 1.0 / (1.0 + np.exp(-a))
@@ -37,8 +40,7 @@ class ANN():
         self.o = np.array([0] * (self.L + 1), dtype=object)
         self.o[0] = np.copy(x)
         for l in range(1, self.L + 1):
-            # self.a[l] = np.dot(self.W[l], self.o[l - 1]) + self.b[l]
-            self.a[l] = np.dot(self.W[l], self.o[l - 1])
+            self.a[l] = np.dot(self.W[l], self.o[l - 1]) + self.b[l]
             if l == self.L:
                 self.o[l] = self.sigmoid(self.a[l])
             else:
@@ -68,12 +70,10 @@ class ANN():
 
     def backpropagation(self, x, target):
         if len(x.shape) == 1:
-            n = 1
             self.forward(x)
             self.backward(target)
             self.loss_gradient()
         else:
-            n = x.shape[1]
             for i in range(len(x)):
                 self.forward(x[i])
                 self.backward(target[i])
@@ -98,19 +98,17 @@ class ANN():
         self.x_test = test[:,:-1]
         self.target_test = test[:,-1]
         
-    def train(self, epochs=100000, learning_rate=0.1):
+    def train(self, epochs=10000, learning_rate=0.1):
         for epoch in range(epochs):
-            if epoch % 10000 == 0:
-                print('{}%'.format(epoch/1000))
+            if epoch % (epochs/10) == 0:
+                print('{}%'.format(int(epoch/(epochs/(100)))))
             for i in range(len(self.x_train)):
                 dE = self.backpropagation(self.x_train[i], self.target_train[i])
                 self.weight_update(learning_rate, dE)
         
-    def test(self, x, target):
-        self.forward(x)
-        error = self.loss(self.o[self.L], target)
-        return error
-                
-    def print_all(self):
-        attrs = vars(self)
-        print('\n\n'.join("%s: \n%s" % item for item in attrs.items()))
+    def test(self):
+        error = 0
+        for i in range(len(self.x_test)):
+            self.forward(self.x_test[i])
+            error += self.loss(self.o[self.L], self.target_test[i])
+        return error/len(self.x_test) 
