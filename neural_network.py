@@ -35,15 +35,6 @@ class ANN():
         for l in range(1, self.L + 1):
             self.W[l] = np.random.randn(self.layers[l], self.layers[l - 1])
             self.b[l] = np.random.randn(self.layers[l],)
-
-    def normalization(self, x, target, target_norm=True):
-        '''
-        Normalization of the input in the range [0,1].
-        '''
-        self.x = x / x.max(axis=0)
-        if target_norm:
-            self.target = target / target.max(axis=0)
-        else: self.target = target
     
     def split_train_test(self, x, target, train_set=0.85, shuffle=True, target_norm=True):
         '''
@@ -63,6 +54,15 @@ class ANN():
         self.target_train = train[:,-1]
         self.x_test = test[:,:-1]
         self.target_test = test[:,-1]
+
+    def normalization(self, x, target, target_norm=True):
+        '''
+        Normalization of the input in the range [0,1].
+        '''
+        self.x = x / x.max(axis=0)
+        if target_norm:
+            self.target = target / target.max(axis=0)
+        else: self.target = target
 
     def sigmoid(self, a):
         '''
@@ -127,14 +127,14 @@ class ANN():
             else:
                 self.deltas[l] = self.relu_derivative(self.a[l]) * np.dot(self.deltas[l + 1].T, self.W[l + 1])
 
-    def loss_gradient(self):
+    def derivative_loss_wrt_weight(self):
         '''
         Computes the derivative of the empirical error wrt to all the weights in the network and
         stores them in a matrix dE.
         '''
         self.dE = np.array([0] * (self.L + 1), dtype=object)
         for l in range(1, self.L + 1):
-            self.dE[l] = np.outer(self.deltas[l], self.o[l-1])
+            self.dE[l] = np.outer(self.deltas[l], self.o[l-1]) # Hadamard product
 
     def weight_update(self, learning_rate, dE):
         '''
@@ -149,7 +149,7 @@ class ANN():
         '''
         self.forward(x)
         self.backward(target)
-        self.loss_gradient()
+        self.derivative_loss_wrt_weight()
         
     def train(self, epochs=10000, eta=0.1):
         '''
