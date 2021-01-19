@@ -12,7 +12,7 @@ The aim of this project is to show the implementation from scratch of the **back
 Author: Filippo Guerranti <filippo.guerranti@student.unisi.it>
 
 I am a M.Sc. student in Computer and Automation Engineering at [University of Siena][unisi], [Department of Information Engineering and Mathematical Sciences][diism].  
-This project is inherent the Machine Learning course held by prof. [Marco Gori][melacci].
+This project is inherent the Machine Learning course held by prof. [Marco Gori][gori].
 
 For any suggestion or doubts please contact me by email.
 
