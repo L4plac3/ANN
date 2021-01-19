@@ -16,7 +16,7 @@ This project is inherent the Machine Learning course held by prof. [Marco Gori][
 
 For any suggestion or doubts please contact me by email.
 
-Distributed under the Apache-2.0 License. _See ``LICENSE`` for more information._
+DO NOT REDISTRIBUTE!
 
 Link to this project: [https://github.com/filippoguerranti/ann][project]
 
