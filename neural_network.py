@@ -1,3 +1,10 @@
+"""
+Author: Filippo Guerranti <filippo.guerranti@student.unisi.it>
+
+DO NOT REDISTRIBUTE!
+"""
+
+
 import numpy as np
 import time
 from tqdm import tqdm
